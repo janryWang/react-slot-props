@@ -11,7 +11,12 @@ import { createSlotComponents } from 'react-slot-props'
 
 const Home = createSlotComponents(
   ({ slot }) => {
-    return <div>{slot('areas.header.areas.nav.elements[0].props.title')}</div>
+    return (
+      <div>
+        {slot.render('areas.header.areas.logo')}
+        {slot('areas.header.areas.nav.elements[0].props.title')}
+      </div>
+    )
   },
   [
     {
@@ -40,6 +45,7 @@ ReactDOM.render(
   <Home>
     <Home.Header>
       <Home.Nav>
+        <Home.Logo>{() => <div>This is Logo,</div>}</Home.Logo>
         <Home.Element title="hello world" />
       </Home.Nav>
     </Home.Header>
