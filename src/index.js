@@ -4,13 +4,44 @@ import get from "lodash.get"
 const findRootType = relations =>
     (toArr(relations).find(v => v.root) || {}).type
 
+const isSlot = val =>
+    val && (val.type && (val.areas || val.elements || val.props))
+
 export const createSlotComponents = (Target, relations) => {
     const RelationsMap = {}
     const ROOT_TYPE =
         Target.displayName || findRootType(relations) || "SlotComponent"
     const getItemByType = type => RelationsMap[type]
-    const createSlotGetter = slots => (path, getter) => {
-        return isFn(getter) ? getter(get(slots, path)) : get(slots, path)
+    const createSlotGetter = slots => {
+        const getter = (path, getter) => {
+            return isFn(getter) ? getter(get(slots, path)) : get(slots, path)
+        }
+
+        getter.render = (path, render) => {
+            const slot = get(slots, path)
+            if (isSlot(slot)) {
+                if (slot.props && isFn(slot.props.children)) {
+                    return isFn(render)
+                        ? render(slot.props.children)
+                        : slot.props.children()
+                }
+            } else if (Array.isArray(slot)) {
+                const childrens = slot.map((item, key) => {
+                    if (
+                        isSlot(slot) &&
+                        slot.props &&
+                        isFn(item.props.children)
+                    ) {
+                        return isFn(render)
+                            ? render(item.props.children)
+                            : item.props.children()
+                    }
+                })
+                return React.createElement(React.Fragment, {}, ...childrens)
+            }
+        }
+
+        return getter
     }
     class SlotComponent extends Component {
         static displayName = ROOT_TYPE
@@ -54,3 +85,5 @@ export const createSlotComponents = (Target, relations) => {
 
     return Wrapper
 }
+
+export default createSlotComponents

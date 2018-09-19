@@ -12,6 +12,8 @@ export const has = (source, target) => {
 
 export const isFn = val => typeof val === "function"
 
+const renderChild = child => (isFn(child) ? undefined : child)
+
 export const createRelationComponent = type => {
     return class RelationNode extends Component {
         static displayName = type
@@ -21,7 +23,7 @@ export const createRelationComponent = type => {
                     {({ config, getItemByType, type: parentType }) => {
                         const parentItem = getItemByType(parentType)
                         const nodeItem = getItemByType(type)
-                        const nodeProps = pickNodeProps(this.props)
+                        const nodeProps = this.props
                         if (parentItem && has(parentItem.areas, type)) {
                             config.areas = config.areas || {}
                             config.areas[Case.snake(type)] = {
@@ -46,7 +48,7 @@ export const createRelationComponent = type => {
                                         type
                                     }}
                                 >
-                                    {this.props.children}
+                                    {renderChild(this.props.children)}
                                 </DslContext.Provider>
                             )
                         } else if (
@@ -77,7 +79,7 @@ export const createRelationComponent = type => {
                                         type
                                     }}
                                 >
-                                    {this.props.children}
+                                    {renderChild(this.props.children)}
                                 </DslContext.Provider>
                             )
                         } else {
@@ -94,7 +96,7 @@ export const createRelationComponent = type => {
                                         type
                                     }}
                                 >
-                                    {this.props.children}
+                                    {renderChild(this.props.children)}
                                 </DslContext.Provider>
                             )
                         }
@@ -103,10 +105,4 @@ export const createRelationComponent = type => {
             )
         }
     }
-}
-
-export const pickNodeProps = props => {
-    const { children, ...nodeProps } = props
-    if (isFn(children)) nodeProps.children = children
-    return nodeProps
 }

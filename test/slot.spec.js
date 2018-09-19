@@ -10,7 +10,12 @@ Enzyme.configure({ adapter: new Adapter() })
 test('simple', t => {
   const Home = createSlotComponents(
     ({ slot }) => {
-      return <div>{slot('areas.header.areas.nav.elements[0].props.title')}</div>
+      return (
+        <div>
+          {slot.render('areas.header.areas.logo')}
+          {slot('areas.header.areas.nav.elements[0].props.title')}
+        </div>
+      )
     },
     [
       {
@@ -34,15 +39,21 @@ test('simple', t => {
       }
     ]
   )
+  const Comp = props=>props.children()
   const el = (
+    <div>
     <Home>
       <Home.Header>
         <Home.Nav>
           <Home.Element title="hello world" />
         </Home.Nav>
+        <Home.Logo>
+          {()=><div>This is Logo,</div>}
+        </Home.Logo>
       </Home.Header>
     </Home>
+    </div>
   )
-  t.truthy(mount(el).text() === 'hello world')
-  t.truthy(mount(el).text() === 'hello world')
+  t.truthy(mount(el).text() === 'This is Logo,hello world')
+  t.truthy(mount(el).text() === 'This is Logo,hello world')
 })
