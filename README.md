@@ -13,8 +13,13 @@ const Home = createSlotComponents(
   ({ slot }) => {
     return (
       <div>
-        {slot.render('areas.header.areas.logo')}
+        {slot.render('areas.header.areas.logo', render =>
+          render({
+            innerData: 'This is Logo,'
+          })
+        )}
         {slot('areas.header.areas.nav.elements[0].props.title')}
+        {slot.render('areas.body')}
       </div>
     )
   },
@@ -37,6 +42,9 @@ const Home = createSlotComponents(
     },
     {
       type: 'Element'
+    },
+    {
+      type: 'Body'
     }
   ]
 )
@@ -45,10 +53,11 @@ ReactDOM.render(
   <Home>
     <Home.Header>
       <Home.Nav>
-        <Home.Logo>{() => <div>This is Logo,</div>}</Home.Logo>
         <Home.Element title="hello world" />
       </Home.Nav>
+      <Home.Logo>{({ innerData }) => <div>{innerData}</div>}</Home.Logo>
     </Home.Header>
+    <Home.Body>{() => <div>This is Body</div>}</Home.Body>
   </Home>
 )
 ```

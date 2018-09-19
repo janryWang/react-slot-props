@@ -12,8 +12,11 @@ test('simple', t => {
     ({ slot }) => {
       return (
         <div>
-          {slot.render('areas.header.areas.logo')}
+          {slot.render('areas.header.areas.logo',(render)=>render({
+            innerData:"This is Logo,"
+          }))}
           {slot('areas.header.areas.nav.elements[0].props.title')}
+          {slot.render('areas.body')}
         </div>
       )
     },
@@ -36,6 +39,9 @@ test('simple', t => {
       },
       {
         type: 'Element'
+      },
+      {
+        type: 'Body'
       }
     ]
   )
@@ -48,12 +54,12 @@ test('simple', t => {
           <Home.Element title="hello world" />
         </Home.Nav>
         <Home.Logo>
-          {()=><div>This is Logo,</div>}
+          {({innerData})=><div>{innerData}</div>}
         </Home.Logo>
       </Home.Header>
+      <Home.Body>{() => <div>This is Body</div>}</Home.Body>
     </Home>
     </div>
   )
-  t.truthy(mount(el).text() === 'This is Logo,hello world')
-  t.truthy(mount(el).text() === 'This is Logo,hello world')
+  t.truthy(mount(el).text() === 'This is Logo,hello worldThis is Body')
 })
