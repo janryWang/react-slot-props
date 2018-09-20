@@ -1,5 +1,11 @@
 import React, { Component } from "react"
-import { createRelationComponent, DslContext, toArr, isFn } from "./utils"
+import {
+    createRelationComponent,
+    DslContext,
+    toArr,
+    isFn,
+    SlotContext
+} from "./utils"
 import get from "lodash.get"
 const findRootType = relations =>
     (toArr(relations).find(v => v.root) || {}).type
@@ -70,11 +76,18 @@ export const createSlotComponents = (Target, relations) => {
                     >
                         {children}
                     </DslContext.Provider>
-                    <Target
-                        {...others}
-                        ref={forwardRef}
-                        slot={createSlotGetter(config)}
-                    />
+                    {(() => {
+                        const slot = createSlotGetter(config)
+                        return (
+                            <SlotContext.Provider value={slot}>
+                                <Target
+                                    {...others}
+                                    ref={forwardRef}
+                                    slot={slot}
+                                />
+                            </SlotContext.Provider>
+                        )
+                    })()}
                 </React.Fragment>
             )
         }
@@ -95,5 +108,11 @@ export const createSlotComponents = (Target, relations) => {
 
     return Wrapper
 }
+
+export const slotable = () => Target => props => (
+    <SlotContext.Consumer>
+        {slot => <Target {...props} slot={slot} />}
+    </SlotContext.Consumer>
+)
 
 export default createSlotComponents

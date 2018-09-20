@@ -4,6 +4,8 @@ import Case from "case"
 
 export const DslContext = createContext()
 
+export const SlotContext = createContext()
+
 export const toArr = arr => (Array.isArray(arr) ? arr : arr ? [arr] : [])
 
 export const has = (source, target) => {
