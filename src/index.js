@@ -20,21 +20,31 @@ export const createSlotComponents = (Target, relations) => {
         getter.render = (path, render) => {
             const slot = get(slots, path)
             if (isSlot(slot)) {
-                if (slot.props && isFn(slot.props.children)) {
-                    return isFn(render)
-                        ? render(slot.props.children)
-                        : slot.props.children()
+                if (slot.props) {
+                    if (isFn(slot.props.children)) {
+                        return isFn(render)
+                            ? render(slot.props.children)
+                            : slot.props.children()
+                    } else {
+                        return isFn(render)
+                            ? render(slot.props.children)
+                            : slot.props.children
+                    }
                 }
             } else if (Array.isArray(slot)) {
                 const childrens = slot.map((item, key) => {
-                    if (
-                        isSlot(slot) &&
-                        slot.props &&
-                        isFn(item.props.children)
-                    ) {
-                        return isFn(render)
-                            ? render(item.props.children)
-                            : item.props.children()
+                    if (isSlot(item)) {
+                        if (item.props) {
+                            if (isFn(item.props.children)) {
+                                return isFn(render)
+                                    ? render(item.props.children)
+                                    : item.props.children()
+                            } else {
+                                return isFn(render)
+                                    ? render(item.props.children)
+                                    : item.props.children
+                            }
+                        }
                     }
                 })
                 return React.createElement(React.Fragment, {}, ...childrens)
