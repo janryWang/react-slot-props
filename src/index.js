@@ -79,15 +79,17 @@ export const createSlotComponents = (Target, relations) => {
             const config = slots || {}
             return (
                 <React.Fragment>
-                    <DslContext.Provider
-                        value={{
-                            type: ROOT_TYPE,
-                            getItemByType,
-                            config
-                        }}
-                    >
-                        {children}
-                    </DslContext.Provider>
+                    <div style={{ display: "none" }}>
+                        <DslContext.Provider
+                            value={{
+                                type: ROOT_TYPE,
+                                getItemByType,
+                                config
+                            }}
+                        >
+                            {children}
+                        </DslContext.Provider>
+                    </div>
                     {(() => {
                         const slot = createSlotGetter(config)
                         return (
