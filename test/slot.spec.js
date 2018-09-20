@@ -16,6 +16,7 @@ test('simple', t => {
             innerData:"This is Logo,"
           }))}
           {slot('areas.header.areas.nav.elements[0].props.title')}
+          {slot.render('areas.header.areas.nav.elements')}
           {slot.render('areas.body')}
         </div>
       )
@@ -52,6 +53,8 @@ test('simple', t => {
       <Home.Header>
         <Home.Nav>
           <Home.Element title="hello world" />
+          <Home.Element>{()=><div>123123123</div>}</Home.Element>
+          <Home.Element>{()=><div>aaaa</div>}</Home.Element>
         </Home.Nav>
         <Home.Logo>
           {({innerData})=><div>{innerData}</div>}
@@ -61,5 +64,5 @@ test('simple', t => {
     </Home>
     </div>
   )
-  t.truthy(mount(el).text() === 'This is Logo,hello worldThis is Body')
+  t.truthy(mount(el).text() === 'This is Logo,hello world123123123aaaaThis is Body')
 })

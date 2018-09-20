@@ -1,11 +1,11 @@
 {
   "name": "react-slot-props",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "test": " cross-env NODE_ENV=test ava",
-    "build": "babel src/index.js --out-dir lib",
+    "build": "babel src --out-dir lib",
     "precommit": "npm run build && lint-staged && npm run test  && git add -A"
   },
   "repository": {
