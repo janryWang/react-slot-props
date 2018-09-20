@@ -23,7 +23,7 @@ export const createSlotComponents = (Target, relations) => {
             return isFn(getter) ? getter(get(slots, path)) : get(slots, path)
         }
 
-        getter.render = (path, render) => {
+        getter.render = (path, render, otherwise) => {
             const slot = get(slots, path)
             if (isSlot(slot)) {
                 if (slot.props) {
@@ -62,6 +62,10 @@ export const createSlotComponents = (Target, relations) => {
                     }
                 })
                 return React.createElement(React.Fragment, {}, ...childrens)
+            } else {
+                if (isFn(otherwise)) {
+                    return otherwise()
+                }
             }
         }
 
