@@ -29,11 +29,11 @@ export const createSlotComponents = (Target, relations) => {
                 if (slot.props) {
                     if (isFn(slot.props.children)) {
                         return isFn(render)
-                            ? render(slot.props.children)
+                            ? render(slot.props.children, slot.props)
                             : slot.props.children()
                     } else {
                         return isFn(render)
-                            ? render(slot.props.children)
+                            ? render(slot.props.children, slot.props)
                             : slot.props.children
                     }
                 }
@@ -43,11 +43,11 @@ export const createSlotComponents = (Target, relations) => {
                         if (item.props) {
                             if (isFn(item.props.children)) {
                                 return isFn(render)
-                                    ? render(item.props.children)
+                                    ? render(item.props.children, item.props)
                                     : item.props.children()
                             } else {
                                 return isFn(render)
-                                    ? render(item.props.children)
+                                    ? render(item.props.children, item.props)
                                     : item.props.children
                             }
                         }
