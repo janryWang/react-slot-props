@@ -25,6 +25,11 @@ export const createSlotComponents = (Target, relations) => {
             return isFn(getter) ? getter(get(slots, path)) : get(slots, path)
         }
 
+        getter.has = path => {
+            const slot = get(slots, path)
+            return isSlot(slot) ? true : Array.isArray(slot) && isSlot(slot[0])
+        }
+
         getter.render = (path, render, otherwise) => {
             const slot = get(slots, path)
             if (isSlot(slot)) {
