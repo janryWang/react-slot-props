@@ -7,7 +7,7 @@ import {
     SlotContext
 } from "./utils"
 import get from "lodash.get"
-import ShallowRenderer from "react-test-renderer"
+import ReactDOMServer from "react-dom/server"
 
 const findRootType = relations =>
     (toArr(relations).find(v => v.root) || {}).type
@@ -84,7 +84,7 @@ export const createSlotComponents = (Target, relations) => {
         render() {
             const { forwardRef, slots, children, ...others } = this.props
             const config = slots || {}
-            ShallowRenderer.create(
+            ReactDOMServer.renderToStaticMarkup(
                 <DslContext.Provider
                     value={{
                         type: ROOT_TYPE,
