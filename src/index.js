@@ -84,18 +84,6 @@ export const createSlotComponents = (Target, relations) => {
         render() {
             const { forwardRef, slots, children, ...others } = this.props
             const config = slots || {}
-            ReactDOMServer.renderToStaticMarkup(
-                <DslContext.Provider
-                    value={{
-                        type: ROOT_TYPE,
-                        getItemByType,
-                        config
-                    }}
-                >
-                    {children}
-                </DslContext.Provider>
-            )
-
             return (
                 <React.Fragment>
                     {(() => {
