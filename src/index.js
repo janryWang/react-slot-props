@@ -7,7 +7,6 @@ import {
     SlotContext
 } from "./utils"
 import get from "lodash.get"
-import ReactDOMServer from "react-dom/server"
 
 const findRootType = relations =>
     (toArr(relations).find(v => v.root) || {}).type
@@ -92,33 +91,17 @@ export const createSlotComponents = (Target, relations) => {
             const config = slots || {}
             return (
                 <React.Fragment>
-                    {(() => {
-                        ReactDOMServer.renderToStaticMarkup(
-                            <DslContext.Provider
-                                value={{
-                                    type: ROOT_TYPE,
-                                    getItemByType,
-                                    config
-                                }}
-                            >
-                                {children}
-                            </DslContext.Provider>
-                        )
-                        // return (
-                        //   <div style={{ display: 'none' }}>
-                        //     <DslContext.Provider
-                        //       value={{
-                        //         type: ROOT_TYPE,
-                        //         getItemByType,
-                        //         config
-                        //       }}
-                        //     >
-                        //       {children}
-                        //     </DslContext.Provider>
-                        //   </div>
-                        // )
-                    })()}
-
+                    <template>
+                        <DslContext.Provider
+                            value={{
+                                type: ROOT_TYPE,
+                                getItemByType,
+                                config
+                            }}
+                        >
+                            {children}
+                        </DslContext.Provider>
+                    </template>
                     {(() => {
                         const slot = createSlotGetter(config)
                         return (
