@@ -5,7 +5,7 @@
 ### Usage
 
 ```jsx
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { createSlotComponents } from 'react-slot-props'
 
@@ -49,15 +49,37 @@ const Home = createSlotComponents(
   ]
 )
 
+const Wrapper = props => {
+  const [visible, setState] = useState(true)
+  useEffect(() => {
+    setTimeout(() => {
+      setState(false)
+    }, 2000)
+  })
+  return visible ? props.children : <React.Fragment />
+}
+
+const NavItem = ()=>{
+  const [title, setTitle] = useState('hello world123123')
+  useEffect(() => {
+    setTimeout(() => {
+      setTitle('123123123123')
+    }, 1000)
+  })
+  return <Home.Element title={title} />
+}
+
 ReactDOM.render(
   <Home>
     <Home.Header>
       <Home.Nav>
-        <Home.Element title="hello world" />
+          <NavItem/>
       </Home.Nav>
       <Home.Logo>{({ innerData }) => <div>{innerData}</div>}</Home.Logo>
     </Home.Header>
-    <Home.Body>{() => <div>This is Body</div>}</Home.Body>
+    <Wrapper>
+      <Home.Body>{() => <div>This is Body</div>}</Home.Body>
+    </Wrapper>
   </Home>
 )
 ```
