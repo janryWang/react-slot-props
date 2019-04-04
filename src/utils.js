@@ -45,8 +45,8 @@ export const createRelationComponent = type => {
       []
     )
     useEffect(() => {
-      if (!isEqual(cache.node.props, props, (_, key) => key !== "children")) {
-        cache.node.props = { ...props }
+      if (!isEqual(cache.props, props, (_, key) => key !== "children")) {
+        cache.props = { ...props }
         clearTimeout(timer.id)
         timer.id = setTimeout(() => {
           notify()
@@ -56,31 +56,34 @@ export const createRelationComponent = type => {
     const parentItem = getItemByType(parentType)
     const nodeItem = getItemByType(type)
     const nodeProps = props
+    if (!cache.props) {
+      cache.props = nodeProps
+    }
     if (parentItem && has(parentItem.areas, type)) {
       config.areas = config.areas || {}
       const key = Case.snake(type)
-      cache.node = cache.node || {
+      const node = {
         type: type,
-        props: { ...nodeProps },
+        props: nodeProps,
         areas: {},
         elements: [],
         path: path.concat(key)
       }
-      config.areas[key] = cache.node
+      config.areas[key] = node
       if (nodeItem.visitor) {
-        nodeItem.visitor(cache.node)
+        nodeItem.visitor(node)
         return
       }
 
       return (
         <DslContext.Provider
           value={{
-            config: cache.node,
+            config: node,
             getItemByType,
             type,
             notify,
             timer,
-            path: cache.node.path
+            path: node.path
           }}
         >
           {renderChild(props.children)}
@@ -88,16 +91,15 @@ export const createRelationComponent = type => {
       )
     } else if (parentItem && has(parentItem.elements, type)) {
       config.elements = config.elements || []
-      if (!cache.node) {
-        cache.node = {
-          type: type,
-          props: { ...nodeProps },
-          areas: {},
-          elements: [],
-          path: path.concat(config.elements.length)
-        }
-        config.elements = config.elements.concat(cache.node)
+
+      const node = {
+        type: type,
+        props: nodeProps,
+        areas: {},
+        elements: [],
+        path: path.concat(config.elements.length)
       }
+      config.elements = config.elements.concat(node)
 
       if (nodeItem.visitor) {
         nodeItem.visitor(cache.node)
@@ -107,21 +109,21 @@ export const createRelationComponent = type => {
       return (
         <DslContext.Provider
           value={{
-            config: cache.node,
+            config: node,
             getItemByType,
             type,
             notify,
             timer,
-            path: cache.node.path
+            path: node.path
           }}
         >
           {renderChild(props.children)}
         </DslContext.Provider>
       )
     } else {
-      cache.node = cache.node || {
+      const node = {
         type: type,
-        props: { ...nodeProps },
+        props: nodeProps,
         areas: {},
         elements: [],
         path: []
@@ -129,7 +131,7 @@ export const createRelationComponent = type => {
       return (
         <DslContext.Provider
           value={{
-            config: cache.node,
+            config: node,
             getItemByType,
             type,
             notify,

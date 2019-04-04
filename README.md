@@ -18,7 +18,9 @@ const Home = createSlotComponents(
             innerData: 'This is Logo,'
           })
         )}
-        {slot('areas.header.areas.nav.elements[0].props.title')}
+        {slot.render('areas.header.areas.nav.elements',(render,props)=>{
+          return props.title
+        })}
         {slot.render('areas.body')}
       </div>
     )
@@ -59,29 +61,41 @@ const Wrapper = props => {
   return visible ? props.children : <React.Fragment />
 }
 
-const NavItem = ()=>{
-  const [title, setTitle] = useState('hello world123123')
-  useEffect(() => {
-    setTimeout(() => {
-      setTitle('123123123123')
-    }, 1000)
-  })
+const NavItem = (props) => {
+  const [title, setTitle] = useState(props.title)
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setTitle('123123123123')
+  //   }, 1000)
+  // })
   return <Home.Element title={title} />
 }
 
-ReactDOM.render(
-  <Home>
-    <Home.Header>
-      <Home.Nav>
-          <NavItem/>
-      </Home.Nav>
-      <Home.Logo>{({ innerData }) => <div>{innerData}</div>}</Home.Logo>
-    </Home.Header>
-    <Wrapper>
-      <Home.Body>{() => <div>This is Body</div>}</Home.Body>
-    </Wrapper>
-  </Home>
-)
+const App = () => {
+  const [columns, setColumns] = useState([])
+  useEffect(() => {
+    setTimeout(() => {
+      setColumns([1, 2, 3, 4])
+    },1000)
+  }, [])
+  return (
+    <Home>
+      <Home.Header>
+        <Home.Nav>
+          {columns.map(key => {
+            return <NavItem key={key} title={key} />
+          })}
+        </Home.Nav>
+        <Home.Logo>{({ innerData }) => <div>{innerData}</div>}</Home.Logo>
+      </Home.Header>
+      <Wrapper>
+        <Home.Body>{() => <div>This is Body</div>}</Home.Body>
+      </Wrapper>
+    </Home>
+  )
+}
+
+ReactDOM.render(<App/>,document.getElementById('root'))
 ```
 
 ### API
