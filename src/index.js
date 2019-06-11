@@ -78,7 +78,16 @@ export const createSlotComponents = (Target, relations) => {
     static displayName = ROOT_TYPE
 
     notify = () => {
+      if (this.unmounted) return
       this.forceUpdate()
+    }
+
+    componentWillUnmount() {
+      this.unmounted = true
+    }
+
+    componentDidMount() {
+      this.unmounted = false
     }
 
     timer = {}
